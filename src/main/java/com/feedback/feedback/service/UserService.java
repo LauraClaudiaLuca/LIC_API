@@ -5,6 +5,8 @@ import com.feedback.feedback.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -13,5 +15,9 @@ public class UserService {
 
     public User login(String email, String password){
         return repository.login(email,password);
+    }
+
+    public User findById(String id){
+        return repository.findById(id).get();
     }
 }
