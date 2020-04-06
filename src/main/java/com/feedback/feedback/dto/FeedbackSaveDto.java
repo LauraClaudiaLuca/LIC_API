@@ -7,7 +7,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginDto {
-    private String username;
-    private String password;
+public class FeedbackSaveDto {
+
+    private String title;
+    private String content;
+    private String productCode;
+    private String score;
+    private Long likes;
+
 }

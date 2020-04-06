@@ -14,17 +14,14 @@ import javax.annotation.PostConstruct;
 import java.util.Base64;
 import java.util.Date;
 
-/**
- * @author : rionescu
- */
 @Component
 public class JwtTokenProvider {
 
     @Value("${security.jwt.token.secret-key:secret}")
     private String secretKey;
 
-    @Value("${security.jwt.token.expire-length:960000000}")
-    private long validityInMilliseconds; // 26,666666667 h
+//    @Value("${security.jwt.token.expire-length:960000000}")
+//    private long validityInMilliseconds; // 26,666666667 h
 
     @Autowired
     private UserService userService;
@@ -35,18 +32,16 @@ public class JwtTokenProvider {
     }
 
     public String createToken(User user) {
-        Claims claims = Jwts.claims().setSubject(user.getId());
-        claims.put("id", user.getId());
-        claims.put("name",user.getName());
-        claims.put("email", user.getEmail());
-        claims.put("role", user.getRole());
+        Claims claims = Jwts.claims().setSubject(user.getUsername());
+        claims.put("username", user.getUsername());
+        claims.put("role",user.getRole());
 
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+//        Date validity = new Date(now.getTime() + validityInMilliseconds);
         String token = Jwts.builder()//
                 .setClaims(claims)//
                 .setIssuedAt(now)//
-                .setExpiration(validity)//
+//                .setExpiration(validity)//
                 .signWith(SignatureAlgorithm.HS256, secretKey)//
                 .compact();
         UsernamePasswordAuthenticationToken auth = getAuthentication(token);
@@ -58,21 +53,11 @@ public class JwtTokenProvider {
     }
 
     UsernamePasswordAuthenticationToken getAuthentication(String token) {
-        UserDetails userDetails = userService.findById(getUserId(token));
+        UserDetails userDetails = userService.findById(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
-    private String getUserId(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-    }
-
-    boolean validateToken(String token) {
-        try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new RuntimeException("Expired or invalid JWT token", e);
-        }
+    public String getUsername(String token){
+        return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("username");
     }
 }

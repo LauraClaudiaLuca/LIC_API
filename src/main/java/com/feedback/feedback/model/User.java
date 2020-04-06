@@ -18,24 +18,21 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document("users")
+@Document(collection = "users")
 public class User implements UserDetails {
     @Id
     @Indexed
-    private String id;
-
-    @Field("name")
-    private String name;
-
-    @Field("email")
-    @Indexed(unique = true)
-    private String email;
+    private String username;
 
     @Field("password")
     private String password;
 
     @Field("role")
     private String role;
+
+    @Field("email")
+    private String email;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -51,7 +48,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override

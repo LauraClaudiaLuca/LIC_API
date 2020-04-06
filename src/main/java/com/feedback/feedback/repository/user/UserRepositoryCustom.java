@@ -1,4 +1,4 @@
-package com.feedback.feedback.repository;
+package com.feedback.feedback.repository.user;
 
 import com.feedback.feedback.model.User;
 

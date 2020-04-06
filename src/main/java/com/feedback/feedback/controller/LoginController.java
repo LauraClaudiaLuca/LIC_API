@@ -30,7 +30,7 @@ public class LoginController {
     public ResponseEntity<String> login(@RequestBody LoginDto loginDto){
         try {
             Gson gson = new Gson();
-            User user = userService.login(loginDto.getEmail(), loginDto.getPassword());
+            User user = userService.login(loginDto.getUsername(), loginDto.getPassword());
             String token = jwtTokenProvider.createToken(user);
             String tokenJson = gson.toJson(token);
             return new ResponseEntity<>(tokenJson, HttpStatus.ACCEPTED);
