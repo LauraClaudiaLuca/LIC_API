@@ -7,12 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FeedbackSaveDto {
+public class FeedbackUpdateDto {
 
+    private String id;
     private String title;
     private String content;
-    private String productCode;
-    private String score;
-    private Long likes;
-
 }

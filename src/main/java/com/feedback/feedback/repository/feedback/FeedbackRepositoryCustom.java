@@ -11,9 +11,11 @@ public interface FeedbackRepositoryCustom {
 
     void delete(String id, String tenant);
 
-    Feedback findById(String id, String tenant);
-
     List<Feedback> getFeedbackInTimeframe(LocalDateTime from, LocalDateTime to);
 
     List<Feedback> getFeedbackInTimeframe(LocalDateTime from, LocalDateTime to, String productCode);
+
+    void updateVote(String id, Long value, String tenant);
+
+    Feedback findById(String id, String tenant);
 }

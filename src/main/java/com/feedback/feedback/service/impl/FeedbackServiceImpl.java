@@ -14,21 +14,26 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public String save(Feedback feedback, String tenant) {
-        return null;
+        return repository.save(feedback,tenant);
     }
 
     @Override
-    public void vote(String feedbackId, String tenant) {
-
-    }
-
-    @Override
-    public void unvote(String feedbackId, String tenant) {
-
+    public void updateVote(String feedbackId,Long value, String tenant) {
+        repository.updateVote(feedbackId,value,tenant);
     }
 
     @Override
     public void delete(String feedbackId, String tenant) {
+        repository.delete(feedbackId,tenant);
+    }
 
+    @Override
+    public void Statistics(String productCode, String tenant) {
+    //TODO: implement statistics
+    }
+
+    @Override
+    public Feedback findById(String id, String tenant) {
+        return repository.findById(id,tenant);
     }
 }

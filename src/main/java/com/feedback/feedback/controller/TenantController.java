@@ -1,7 +1,7 @@
 package com.feedback.feedback.controller;
 
 import com.feedback.feedback.config.JwtTokenProvider;
-import com.feedback.feedback.dto.FeedbackSaveDto;
+import com.feedback.feedback.dto.FeedbackCreateDto;
 import com.feedback.feedback.facade.FeedbackFacade;
 import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +22,13 @@ public class TenantController {
     private JwtTokenProvider jwtTokenProvider;
 
     @PostMapping(
-            value = "/save",
+            value = "/create",
             produces = APPLICATION_JSON_VALUE,
             consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> saveFeedback(@RequestBody FeedbackSaveDto dto, @RequestHeader (name="Token") String token) {
+    public ResponseEntity<String> saveFeedback(@RequestBody FeedbackCreateDto dto, @RequestHeader (name="Token") String token) {
         try{
             String tenant = jwtTokenProvider.getUsername(token);
-            String createdId = facade.save(dto, tenant);
+            String createdId = facade.create(dto, tenant);
             return new ResponseEntity<>(createdId, HttpStatus.OK);
         }
         catch (SignatureException exception){
@@ -38,7 +38,7 @@ public class TenantController {
     }
 
     @DeleteMapping(
-            value = "/delete/feedbackID",
+            value = "/delete/{feedbackId}",
             produces = APPLICATION_JSON_VALUE,
             consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteFeedback(@PathVariable String feedbackId, @RequestHeader (name="Token") String token) {
@@ -47,12 +47,22 @@ public class TenantController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PostMapping(
+            value = "/vote/{feedbackId}",
+            produces = APPLICATION_JSON_VALUE,
+            consumes = APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<Void> voteFeedback(@PathVariable String feedbackId, @RequestHeader (name="Token") String token){
         String tenant = jwtTokenProvider.getUsername(token);
         facade.vote(feedbackId, tenant);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PostMapping(
+            value = "/unvote/{feedbackId}",
+            produces = APPLICATION_JSON_VALUE,
+            consumes = APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<Void> unvoteFeedback(@PathVariable String feedbackId, @RequestHeader (name="Token") String token){
         String tenant = jwtTokenProvider.getUsername(token);
         facade.unvote(feedbackId, tenant);

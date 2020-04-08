@@ -4,10 +4,13 @@ import com.feedback.feedback.model.Feedback;
 
 public interface FeedbackService {
 
-    String save(Feedback feedback,String tenant);
-    void vote(String feedbackId, String tenant);
-    void unvote(String feedbackId, String tenant);
+    String save(Feedback feedback, String tenant);
+
+    void updateVote(String feedbackId, Long value, String tenant);
+
     void delete(String feedbackId, String tenant);
 
-    //TODO: statistics
+    void Statistics(String productCode, String tenant);
+
+    Feedback findById(String id, String tenant);
 }
