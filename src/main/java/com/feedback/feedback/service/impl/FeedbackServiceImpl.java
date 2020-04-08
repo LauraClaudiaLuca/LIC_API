@@ -1,10 +1,13 @@
 package com.feedback.feedback.service.impl;
 
 import com.feedback.feedback.model.Feedback;
+import com.feedback.feedback.model.Statistics;
 import com.feedback.feedback.repository.feedback.FeedbackRepository;
 import com.feedback.feedback.service.FeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class FeedbackServiceImpl implements FeedbackService {
@@ -28,8 +31,9 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public void Statistics(String productCode, String tenant) {
-    //TODO: implement statistics
+    public Statistics getStatistics(String productCode, LocalDateTime from, LocalDateTime to, String tenant) {
+        //TODO: implement statistics
+        return null;
     }
 
     @Override

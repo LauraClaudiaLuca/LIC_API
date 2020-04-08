@@ -16,7 +16,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     @Override
     public User login(String username, String password) {
         Query query = new Query(new Criteria().andOperator(
-                Criteria.where("username").is(username),
+                Criteria.where("_id").is(username),
                 Criteria.where("password").is(password)));
         return mongoTemplate.findOne(query, User.class);
     }

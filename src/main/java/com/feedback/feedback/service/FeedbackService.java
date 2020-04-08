@@ -1,6 +1,9 @@
 package com.feedback.feedback.service;
 
 import com.feedback.feedback.model.Feedback;
+import com.feedback.feedback.model.Statistics;
+
+import java.time.LocalDateTime;
 
 public interface FeedbackService {
 
@@ -10,7 +13,7 @@ public interface FeedbackService {
 
     void delete(String feedbackId, String tenant);
 
-    void Statistics(String productCode, String tenant);
+    Statistics getStatistics(String productCode, LocalDateTime from, LocalDateTime to, String tenant);
 
     Feedback findById(String id, String tenant);
 }

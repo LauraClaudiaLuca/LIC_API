@@ -25,7 +25,7 @@ public class FeedbackFacadeImpl implements FeedbackFacade {
 
     @Override
     public void delete(String feedbackId, String tenant) {
-
+        service.delete(feedbackId,tenant);
     }
 
     @Override
