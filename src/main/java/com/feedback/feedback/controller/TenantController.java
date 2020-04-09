@@ -40,7 +40,7 @@ public class TenantController {
     @DeleteMapping(
             value = "/delete/{feedbackId}"
     )
-    public ResponseEntity<Void> deleteFeedback(@PathVariable String feedbackId, @RequestHeader(name = "Token") String token) {
+    public ResponseEntity<Void> deleteFeedback(@PathVariable("feedbackId") String feedbackId, @RequestHeader(name = "Token") String token) {
         String tenant = jwtTokenProvider.getUsername(token);
         facade.delete(feedbackId, tenant);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -49,7 +49,7 @@ public class TenantController {
     @PutMapping(
             value = "/vote/{feedbackId}"
     )
-    public ResponseEntity<Void> voteFeedback(@PathVariable String feedbackId, @RequestHeader(name = "Token") String token) {
+    public ResponseEntity<Void> voteFeedback(@PathVariable("feedbackId") String feedbackId, @RequestHeader(name = "Token") String token) {
         String tenant = jwtTokenProvider.getUsername(token);
         facade.updateVote(feedbackId, 1L, tenant);
         return new ResponseEntity<>(HttpStatus.OK);
