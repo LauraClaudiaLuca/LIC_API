@@ -13,7 +13,7 @@ public interface FeedbackService {
 
     void delete(String feedbackId, String tenant);
 
-    Statistics getStatistics(String productCode, LocalDateTime from, LocalDateTime to, String tenant);
+    Statistics getStatistics(String productCode, Long from, Long to, String tenant);
 
     Feedback findById(String id, String tenant);
 }

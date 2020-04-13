@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 public class FeedbackRepositoryCustomImpl implements FeedbackRepositoryCustom {
@@ -28,15 +30,27 @@ public class FeedbackRepositoryCustomImpl implements FeedbackRepositoryCustom {
     }
 
     @Override
-    public List<Feedback> getFeedbackInTimeframe(LocalDateTime from, LocalDateTime to) {
-        //TODO: implement
-        return null;
+    public List<Feedback> getFeedbackInTimeframe(Long from, Long to, String tenant) {
+        Criteria criteria = new Criteria().andOperator(
+                Criteria.where("createdAt").gte(from),
+                Criteria.where("createdAt").lte(to)
+        );
+        Query query = new Query(criteria);
+        return mongoTemplate.find(query, Feedback.class, tenant);
     }
 
     @Override
-    public List<Feedback> getFeedbackInTimeframe(LocalDateTime from, LocalDateTime to, String productCode) {
-        //TODO: implement
-        return null;
+    public List<Feedback> getFeedbackInTimeframe(Long from, Long to, String productCode, String tenant) {
+        Criteria criteria = new Criteria().andOperator(
+                new Criteria().andOperator(
+                        Criteria.where("createdAt").gte(from),
+                        Criteria.where("createdAt").lte(to)
+                ),
+                Criteria.where("productCode").is(productCode)
+
+        );
+        Query query = new Query(criteria);
+        return mongoTemplate.find(query, Feedback.class, tenant);
     }
 
     @Override

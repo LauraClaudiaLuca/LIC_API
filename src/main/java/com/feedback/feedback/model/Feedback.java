@@ -34,5 +34,5 @@ public class Feedback {
     private Long likes;
 
     @Field("createdAt")
-    private LocalDateTime createdAt;
+    private Long createdAt;
 }

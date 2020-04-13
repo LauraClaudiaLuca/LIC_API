@@ -40,7 +40,7 @@ public class JwtTokenProvider {
 //        Date validity = new Date(now.getTime() + validityInMilliseconds);
         String token = Jwts.builder()//
                 .setClaims(claims)//
-                .setIssuedAt(now)//
+//                .setIssuedAt(now)//
 //                .setExpiration(validity)//
                 .signWith(SignatureAlgorithm.HS256, secretKey)//
                 .compact();
