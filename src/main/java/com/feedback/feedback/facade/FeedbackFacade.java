@@ -2,7 +2,6 @@ package com.feedback.feedback.facade;
 
 import com.feedback.feedback.dto.FeedbackCreateDto;
 import com.feedback.feedback.dto.FeedbackUpdateDto;
-import com.feedback.feedback.dto.StatisticsDto;
 import com.feedback.feedback.model.Statistics;
 
 public interface FeedbackFacade {

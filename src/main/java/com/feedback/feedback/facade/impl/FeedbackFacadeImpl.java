@@ -2,7 +2,6 @@ package com.feedback.feedback.facade.impl;
 
 import com.feedback.feedback.dto.FeedbackCreateDto;
 import com.feedback.feedback.dto.FeedbackUpdateDto;
-import com.feedback.feedback.dto.StatisticsDto;
 import com.feedback.feedback.facade.FeedbackFacade;
 import com.feedback.feedback.model.Feedback;
 import com.feedback.feedback.model.Statistics;
@@ -11,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 @Component
 public class FeedbackFacadeImpl implements FeedbackFacade {
