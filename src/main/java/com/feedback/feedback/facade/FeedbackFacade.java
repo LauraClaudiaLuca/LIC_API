@@ -6,14 +6,14 @@ import com.feedback.feedback.model.Statistics;
 
 public interface FeedbackFacade {
 
-    String create(FeedbackCreateDto dto, String tenant);
+    String create(FeedbackCreateDto dto, String token);
 
-    void delete(String feedbackId, String tenant);
+    boolean delete(String feedbackId, String token);
 
-    void updateVote(String feedbackId,Long value, String tenant);
+    boolean updateVote(String feedbackId,Long value, String token);
 
-    void updateFeedback(FeedbackUpdateDto dto, String tenant);
+    boolean updateFeedback(FeedbackUpdateDto dto, String token);
 
-    Statistics getStatistics(Long dateFrom, Long dateTo, String productCode, String tenant);
+    Statistics getStatistics(Long dateFrom, Long dateTo, String productCode, String token);
 
 }

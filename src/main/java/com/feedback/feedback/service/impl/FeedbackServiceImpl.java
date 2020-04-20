@@ -45,13 +45,20 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public void updateVote(String feedbackId, Long value, String tenant) {
-        repository.updateVote(feedbackId, value, tenant);
+    public boolean updateVote(String feedbackId, Long value, String tenant) {
+        if (repository.findById(feedbackId, tenant) != null) {
+            repository.updateVote(feedbackId, value, tenant);
+            return true;}
+        return false;
     }
 
     @Override
-    public void delete(String feedbackId, String tenant) {
-        repository.delete(feedbackId, tenant);
+    public boolean delete(String feedbackId, String tenant) {
+        if (repository.findById(feedbackId, tenant) != null) {
+            repository.delete(feedbackId, tenant);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -59,8 +66,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         List<Feedback> feedbacks;
         if (productCode == null) {
             feedbacks = repository.getFeedbackInTimeframe(from, to, tenant);
-        }
-        else{
+        } else {
             feedbacks = repository.getFeedbackInTimeframe(from, to, productCode, tenant);
         }
         if (!feedbacks.isEmpty()) {
@@ -76,11 +82,11 @@ public class FeedbackServiceImpl implements FeedbackService {
                     .filter(f -> f.getScore() > positiveStart && f.getScore() <= positiveEnd)
                     .map(f -> f.getLikes() + 1)
                     .reduce((acc, item) -> acc + item);
-            double negative = nrNegative.isPresent()?nrNegative.get():0;
-            double positive=nrPositive.isPresent()?nrPositive.get():0;
-            double neutral = nrNeutral.isPresent()?nrNeutral.get():0;
+            double negative = nrNegative.isPresent() ? nrNegative.get() : 0;
+            double positive = nrPositive.isPresent() ? nrPositive.get() : 0;
+            double neutral = nrNeutral.isPresent() ? nrNeutral.get() : 0;
 
-            double total = negative + positive+ neutral;
+            double total = negative + positive + neutral;
             double percNegative = calculatePercentage(negative, total);
             double percNeutral = calculatePercentage(neutral, total);
             double percPositive = calculatePercentage(positive, total);

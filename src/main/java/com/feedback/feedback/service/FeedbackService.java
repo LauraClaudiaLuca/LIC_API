@@ -9,9 +9,9 @@ public interface FeedbackService {
 
     String save(Feedback feedback, String tenant);
 
-    void updateVote(String feedbackId, Long value, String tenant);
+    boolean updateVote(String feedbackId, Long value, String tenant);
 
-    void delete(String feedbackId, String tenant);
+    boolean delete(String feedbackId, String tenant);
 
     Statistics getStatistics(String productCode, Long from, Long to, String tenant);
 

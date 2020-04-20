@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-public class LoginController {
+public class UserController {
 
     @Autowired
     private UserFacade facade;

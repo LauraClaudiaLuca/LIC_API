@@ -23,14 +23,12 @@ public class TenantController {
 
     @Autowired
     private FeedbackFacade facade;
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
 
 
-    @ApiOperation(value = "Feedback is sent to be stored on INDIGO's servers.")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "Feedback successfully stored."),
-            @ApiResponse(code = 403, message = "The provided token is invalid.")
-    })
+    //    @ApiOperation(value = "Feedback is sent to be stored on INDIGO's servers.")
+//    @ApiResponses(value = {@ApiResponse(code = 200, message = "Feedback successfully stored."),
+//            @ApiResponse(code = 403, message = "The provided token is invalid.")
+//    })
     @PostMapping(
             value = "/create",
             produces = APPLICATION_JSON_VALUE,
@@ -39,11 +37,10 @@ public class TenantController {
             @RequestBody FeedbackCreateDto dto,
             @RequestHeader(name = "Token") String token) {
         try {
-            String tenant = jwtTokenProvider.getUsername(token);
-            String createdId = facade.create(dto, tenant);
+            String createdId = facade.create(dto, token);
             return new ResponseEntity<>(createdId, HttpStatus.OK);
         } catch (SignatureException exception) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Token not valid!", HttpStatus.FORBIDDEN);
         }
 
     }
@@ -52,26 +49,41 @@ public class TenantController {
             value = "/delete/{feedbackId}"
     )
     public ResponseEntity<Void> deleteFeedback(@PathVariable("feedbackId") String feedbackId, @RequestHeader(name = "Token") String token) {
-        String tenant = jwtTokenProvider.getUsername(token);
-        facade.delete(feedbackId, tenant);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            if (facade.delete(feedbackId, token)) {
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (SignatureException exception) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
     }
 
     @PutMapping(
             value = "/vote/{feedbackId}"
     )
     public ResponseEntity<Void> voteFeedback(@PathVariable("feedbackId") String feedbackId, @RequestHeader(name = "Token") String token) {
-        String tenant = jwtTokenProvider.getUsername(token);
-        facade.updateVote(feedbackId, 1L, tenant);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            if (facade.updateVote(feedbackId, 1L, token)) {
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (SignatureException exception) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
     }
 
     @PutMapping(
             value = "/unvote/{feedbackId}")
     public ResponseEntity<Void> unvoteFeedback(@PathVariable String feedbackId, @RequestHeader(name = "Token") String token) {
-        String tenant = jwtTokenProvider.getUsername(token);
-        facade.updateVote(feedbackId, -1L, tenant);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            if (facade.updateVote(feedbackId, -1L, token)) {
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (SignatureException exception) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
     }
 
     @PutMapping(
@@ -79,10 +91,15 @@ public class TenantController {
             produces = APPLICATION_JSON_VALUE,
             consumes = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Void> updateFeedback(@RequestBody FeedbackUpdateDto dto, @RequestHeader(name = "Token") String token){
-        String tenant = jwtTokenProvider.getUsername(token);
-        facade.updateFeedback(dto,tenant);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Void> updateFeedback(@RequestBody FeedbackUpdateDto dto, @RequestHeader(name = "Token") String token) {
+        try {
+            if (facade.updateFeedback(dto, token)) {
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (SignatureException exception) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
     }
 
     @GetMapping(
@@ -91,14 +108,16 @@ public class TenantController {
     )
     public ResponseEntity<Statistics> getStatistics(@RequestParam Long dateFrom, @RequestParam Long dateTo,
                                                     @RequestParam(required = false) String productCode,
-                                                    @RequestHeader(name = "Token") String token){
-        String tenant = jwtTokenProvider.getUsername(token);
-        Statistics stats = facade.getStatistics(dateFrom,dateTo,productCode,tenant);
-        if(stats!=null){
-            return new ResponseEntity<>(stats,HttpStatus.OK);
-        }
-        else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                                                    @RequestHeader(name = "Token") String token) {
+        try {
+            Statistics stats = facade.getStatistics(dateFrom, dateTo, productCode, token);
+            if (stats != null) {
+                return new ResponseEntity<>(stats, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (SignatureException exception) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
 
