@@ -1,16 +1,11 @@
 package com.feedback.feedback;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.feedback.feedback.config.JwtTokenProvider;
-import com.feedback.feedback.controller.TenantController;
 import com.feedback.feedback.dto.FeedbackCreateDto;
 import com.feedback.feedback.dto.FeedbackUpdateDto;
 import com.feedback.feedback.facade.FeedbackFacade;
-import com.feedback.feedback.facade.impl.FeedbackFacadeImpl;
-import com.feedback.feedback.model.User;
 import io.jsonwebtoken.SignatureException;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,8 +16,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc

@@ -2,6 +2,8 @@ package com.feedback.feedback.facade.impl;
 
 import com.feedback.feedback.dto.LoginDto;
 import com.feedback.feedback.dto.RegisterDto;
+import com.feedback.feedback.dto.UpdateEmailDto;
+import com.feedback.feedback.dto.UpdatePasswordDto;
 import com.feedback.feedback.facade.UserFacade;
 import com.feedback.feedback.model.User;
 import com.feedback.feedback.service.UserService;
@@ -23,5 +25,24 @@ public class UserFacadeImpl implements UserFacade {
     public boolean register(RegisterDto dto) {
         User user = new User(dto.getUsername(),dto.getPassword(), "USER",dto.getEmail());
         return userService.register(user);
+    }
+
+    @Override
+    public void updatePassword(UpdatePasswordDto dto) {
+        User user = userService.findById(dto.getUsername());
+        user.setPassword(dto.getPassword());
+        userService.update(user);
+    }
+
+    @Override
+    public void updateEmail(UpdateEmailDto dto) {
+        User user = userService.findById(dto.getUsername());
+        user.setEmail(dto.getEmail());
+        userService.update(user);
+    }
+
+    @Override
+    public User getUser(String username) {
+        return userService.getUser(username);
     }
 }

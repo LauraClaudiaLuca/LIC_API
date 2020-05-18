@@ -31,4 +31,14 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
+    @Override
+    public void update(User user) {
+        repository.save(user);
+    }
+
+    @Override
+    public User getUser(String username) {
+        return repository.findById(username).get();
+    }
 }
