@@ -16,4 +16,5 @@ public interface FeedbackFacade {
 
     Statistics getStatistics(Long dateFrom, Long dateTo, String productCode, String token);
 
+    Statistics getStatisticsNoLikes(Long dateFrom, Long dateTo, String productCode, String token);
 }

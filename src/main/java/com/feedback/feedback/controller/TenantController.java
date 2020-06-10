@@ -121,4 +121,23 @@ public class TenantController {
         }
     }
 
+    @GetMapping(
+            value = "/statistics-no-likes",
+            produces = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Statistics> getStatisticsNoLikes(@RequestParam Long dateFrom, @RequestParam Long dateTo,
+                                                    @RequestParam(required = false) String productCode,
+                                                    @RequestHeader(name = "Token") String token) {
+        try {
+            Statistics stats = facade.getStatisticsNoLikes(dateFrom, dateTo, productCode, token);
+            if (stats != null) {
+                return new ResponseEntity<>(stats, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (SignatureException exception) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
 }

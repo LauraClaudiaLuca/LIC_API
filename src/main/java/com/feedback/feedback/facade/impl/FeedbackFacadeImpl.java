@@ -60,4 +60,10 @@ public class FeedbackFacadeImpl implements FeedbackFacade {
 
     }
 
+    @Override
+    public Statistics getStatisticsNoLikes(Long dateFrom, Long dateTo, String productCode, String token) {
+        String tenant = jwtTokenProvider.getUsername(token);
+        return service.getStatisticsNoLikes(productCode,dateFrom,dateTo,tenant);
+    }
+
 }

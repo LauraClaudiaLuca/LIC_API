@@ -15,5 +15,7 @@ public interface FeedbackService {
 
     Statistics getStatistics(String productCode, Long from, Long to, String tenant);
 
+    Statistics getStatisticsNoLikes(String productCode, Long from, Long to, String tenant);
+
     Feedback findById(String id, String tenant);
 }

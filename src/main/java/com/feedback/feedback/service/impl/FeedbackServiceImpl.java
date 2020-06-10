@@ -103,6 +103,47 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
+    public Statistics getStatisticsNoLikes(String productCode, Long from, Long to, String tenant) {
+        List<Feedback> feedbacks;
+        if (productCode == null) {
+            feedbacks = repository.getFeedbackInTimeframe(from, to, tenant);
+        } else {
+            feedbacks = repository.getFeedbackInTimeframe(from, to, productCode, tenant);
+        }
+        if (!feedbacks.isEmpty()) {
+            Optional<Long> nrNegative = feedbacks.stream()
+                    .filter(f -> f.getScore() >= negativeStart && f.getScore() < negativeEnd)
+                    .map(f -> 1L)
+                    .reduce((acc, item) -> acc + item);
+            Optional<Long> nrNeutral = feedbacks.stream()
+                    .filter(f -> f.getScore() >= neutralStart && f.getScore() <= neutralEnd)
+                    .map(f -> 1L)
+                    .reduce((acc, item) -> acc + item);
+            Optional<Long> nrPositive = feedbacks.stream()
+                    .filter(f -> f.getScore() > positiveStart && f.getScore() <= positiveEnd)
+                    .map(f -> 1L)
+                    .reduce((acc, item) -> acc + item);
+            double negative = nrNegative.isPresent() ? nrNegative.get() : 0;
+            double positive = nrPositive.isPresent() ? nrPositive.get() : 0;
+            double neutral = nrNeutral.isPresent() ? nrNeutral.get() : 0;
+
+            double total = negative + positive + neutral;
+            double percNegative = calculatePercentage(negative, total);
+            double percNeutral = calculatePercentage(neutral, total);
+            double percPositive = calculatePercentage(positive, total);
+
+            feedbacks.sort(Comparator.comparing(Feedback::getScore));
+            Feedback mostPositive = feedbacks.get(feedbacks.size() - 1);
+            Feedback mostNegative = feedbacks.get(0);
+            feedbacks.sort(Comparator.comparing(Feedback::getLikes));
+            Feedback mostLiked = feedbacks.get(feedbacks.size() - 1);
+
+            return new Statistics(percPositive, percNegative, percNeutral, mostPositive, mostNegative, mostLiked);
+        }
+        return null;
+    }
+
+    @Override
     public Feedback findById(String id, String tenant) {
         return repository.findById(id, tenant);
     }
