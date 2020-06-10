@@ -2,6 +2,7 @@ package com.feedback.feedback;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.feedback.feedback.dto.LoginDto;
+import com.feedback.feedback.dto.RegisterDto;
 import com.feedback.feedback.facade.UserFacade;
 import com.feedback.feedback.model.User;
 import org.junit.jupiter.api.Test;
@@ -54,6 +55,31 @@ class UserRestTests {
 				.andReturn();
 		assert(res.getResponse().getContentAsString().equals(INVALID_CREDENTIALS_MESSAGE));
 		assert(res.getResponse().getStatus() == 401);
+	}
+	@Test
+	void registerSuccess() throws Exception {
+		RegisterDto dto = new RegisterDto("test","test","test@test.com");
+		when(facade.register(dto)).thenReturn(true);
+		String json = new ObjectMapper().writeValueAsString(dto);
+		MvcResult res = mvc.perform(
+				post("/register")
+						.contentType(APPLICATION_JSON_VALUE)
+						.content(json))
+				.andReturn();
+		assert(res.getResponse().getStatus() == 200);
+	}
+
+	@Test
+	void registerFail()throws Exception{
+		RegisterDto dto = new RegisterDto("test","test","test@test.com");
+		when(facade.register(dto)).thenReturn(false);
+		String json = new ObjectMapper().writeValueAsString(dto);
+		MvcResult res = mvc.perform(
+				post("/register")
+						.contentType(APPLICATION_JSON_VALUE)
+						.content(json))
+				.andReturn();
+		assert(res.getResponse().getStatus() == 412);
 	}
 
 }

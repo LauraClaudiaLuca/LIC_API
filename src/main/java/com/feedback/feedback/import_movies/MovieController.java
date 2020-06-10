@@ -1,4 +1,4 @@
-package com.feedback.feedback.movies;
+package com.feedback.feedback.import_movies;
 
 import com.feedback.feedback.model.Feedback;
 import org.springframework.beans.factory.annotation.Autowired;

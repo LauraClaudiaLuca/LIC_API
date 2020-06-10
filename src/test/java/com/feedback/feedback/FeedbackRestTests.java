@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.feedback.feedback.dto.FeedbackCreateDto;
 import com.feedback.feedback.dto.FeedbackUpdateDto;
 import com.feedback.feedback.facade.FeedbackFacade;
+import com.feedback.feedback.model.Feedback;
+import com.feedback.feedback.model.Statistics;
 import io.jsonwebtoken.SignatureException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,28 +32,29 @@ class FeedbackRestTests {
     private static final String GOOD_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwidXNlcm5hbWUiOiJ0ZXN0Iiwicm9sZSI6InRlc3QtdXNlciJ9.9KxwqBU7p_ipsLCUntuOwGlIy8082IODPjEe6YdfRv8";
     private static final String BAD_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwidXNlcm5hbWUiOiJ0ZXN0Iiwicm9sZSI6InRlc3QtdXNlciJ9.9KxwqBU7p_ipsLCUntuOwGlIy8082IODPj";
     private static final String ID = "123";
+
     @Test
     void addSuccess() throws Exception {
 
-        FeedbackCreateDto dto = new FeedbackCreateDto("Test","Great test!", "test");
-        when(facade.create(dto,GOOD_TOKEN)).thenReturn(ID);
+        FeedbackCreateDto dto = new FeedbackCreateDto("Test", "Great test!", "test");
+        when(facade.create(dto, GOOD_TOKEN)).thenReturn(ID);
 
         String json = new ObjectMapper().writeValueAsString(dto);
         MvcResult result = mvc.perform(
                 post("/tenant/create")
-                .header("Token", GOOD_TOKEN)
-                .contentType(APPLICATION_JSON)
-                .content(json))
+                        .header("Token", GOOD_TOKEN)
+                        .contentType(APPLICATION_JSON)
+                        .content(json))
                 .andReturn();
-        assert(result.getResponse().getStatus() == 200);
-        assert(result.getResponse().getContentAsString().equals(ID));
+        assert (result.getResponse().getStatus() == 200);
+        assert (result.getResponse().getContentAsString().equals(ID));
     }
 
     @Test
     void addFail() throws Exception {
 
-        FeedbackCreateDto dto = new FeedbackCreateDto("Test","Great test!", "test");
-        when(facade.create(dto,BAD_TOKEN)).thenThrow( new SignatureException("Token not valid"));
+        FeedbackCreateDto dto = new FeedbackCreateDto("Test", "Great test!", "test");
+        when(facade.create(dto, BAD_TOKEN)).thenThrow(new SignatureException("Token not valid"));
 
         String json = new ObjectMapper().writeValueAsString(dto);
         MvcResult result = mvc.perform(
@@ -60,128 +63,142 @@ class FeedbackRestTests {
                         .contentType(APPLICATION_JSON)
                         .content(json))
                 .andReturn();
-        assert(result.getResponse().getStatus() == 403);
-        assert(result.getResponse().getContentAsString().equals("Token not valid!"));
+        assert (result.getResponse().getStatus() == 403);
+        assert (result.getResponse().getContentAsString().equals("Token not valid!"));
     }
 
     @Test
-    void deleteSuccess() throws Exception{
-        when(facade.delete(ID,GOOD_TOKEN)).thenReturn(true);
+    void deleteSuccess() throws Exception {
+        when(facade.delete(ID, GOOD_TOKEN)).thenReturn(true);
         MvcResult result = mvc.perform(
-                delete("/tenant/delete/"+ID)
+                delete("/tenant/delete/" + ID)
                         .header("Token", GOOD_TOKEN))
                 .andReturn();
-        assert(result.getResponse().getStatus() == 200);
+        assert (result.getResponse().getStatus() == 200);
     }
 
     @Test
-    void deleteFail() throws Exception{
-        when(facade.delete(ID,GOOD_TOKEN)).thenReturn(false);
+    void deleteFail() throws Exception {
+        when(facade.delete(ID, GOOD_TOKEN)).thenReturn(false);
         MvcResult result1 = mvc.perform(
-                delete("/tenant/delete/"+ID)
+                delete("/tenant/delete/" + ID)
                         .header("Token", GOOD_TOKEN))
                 .andReturn();
-        assert(result1.getResponse().getStatus() == 404);
+        assert (result1.getResponse().getStatus() == 404);
 
-        when(facade.delete(ID,BAD_TOKEN)).thenThrow(new SignatureException("Token not valid"));
+        when(facade.delete(ID, BAD_TOKEN)).thenThrow(new SignatureException("Token not valid"));
         MvcResult result2 = mvc.perform(
-                delete("/tenant/delete/"+ID)
+                delete("/tenant/delete/" + ID)
                         .header("Token", BAD_TOKEN))
                 .andReturn();
-        assert(result2.getResponse().getStatus() == 403);
+        assert (result2.getResponse().getStatus() == 403);
     }
 
     @Test
-    void updateContentSuccess() throws  Exception{
-        FeedbackUpdateDto dto = new FeedbackUpdateDto(ID,"test","test");
+    void updateContentSuccess() throws Exception {
+        FeedbackUpdateDto dto = new FeedbackUpdateDto(ID, "test", "test");
         String json = new ObjectMapper().writeValueAsString(dto);
-        when(facade.updateFeedback(dto,GOOD_TOKEN)).thenReturn(true);
+        when(facade.updateFeedback(dto, GOOD_TOKEN)).thenReturn(true);
         MvcResult result = mvc.perform(
                 put("/tenant/update")
                         .header("Token", GOOD_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(json))
                 .andReturn();
-        assert(result.getResponse().getStatus() == 200);
+        assert (result.getResponse().getStatus() == 200);
     }
 
     @Test
-    void updateContentFail() throws  Exception{
-        FeedbackUpdateDto dto = new FeedbackUpdateDto(ID,"test","test");
+    void updateContentFail() throws Exception {
+        FeedbackUpdateDto dto = new FeedbackUpdateDto(ID, "test", "test");
         String json = new ObjectMapper().writeValueAsString(dto);
 
-        when(facade.updateFeedback(dto,GOOD_TOKEN)).thenReturn(false);
+        when(facade.updateFeedback(dto, GOOD_TOKEN)).thenReturn(false);
         MvcResult result1 = mvc.perform(
                 put("/tenant/update")
                         .header("Token", GOOD_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(json))
                 .andReturn();
-        assert(result1.getResponse().getStatus() == 404);
+        assert (result1.getResponse().getStatus() == 404);
 
-        when(facade.updateFeedback(dto,BAD_TOKEN)).thenThrow(new SignatureException("Token not valid"));
+        when(facade.updateFeedback(dto, BAD_TOKEN)).thenThrow(new SignatureException("Token not valid"));
         MvcResult result2 = mvc.perform(
                 put("/tenant/update")
                         .header("Token", BAD_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(json))
                 .andReturn();
-        assert(result2.getResponse().getStatus() == 403);
+        assert (result2.getResponse().getStatus() == 403);
     }
 
     @Test
-    void voteSuccess() throws Exception{
-        when(facade.updateVote(ID,1L,GOOD_TOKEN)).thenReturn(true);
+    void voteSuccess() throws Exception {
+        when(facade.updateVote(ID, 1L, GOOD_TOKEN)).thenReturn(true);
         MvcResult result = mvc.perform(
-                put("/tenant/vote/"+ID)
+                put("/tenant/vote/" + ID)
                         .header("Token", GOOD_TOKEN))
                 .andReturn();
-        assert(result.getResponse().getStatus() == 200);
+        assert (result.getResponse().getStatus() == 200);
     }
 
 
     @Test
-    void voteFail() throws Exception{
-        when(facade.updateVote(ID,1L,GOOD_TOKEN)).thenReturn(false);
+    void voteFail() throws Exception {
+        when(facade.updateVote(ID, 1L, GOOD_TOKEN)).thenReturn(false);
         MvcResult result1 = mvc.perform(
-                put("/tenant/vote/"+ID)
+                put("/tenant/vote/" + ID)
                         .header("Token", GOOD_TOKEN))
                 .andReturn();
-        assert(result1.getResponse().getStatus() == 404);
+        assert (result1.getResponse().getStatus() == 404);
 
-        when(facade.updateVote(ID,1L,BAD_TOKEN)).thenThrow(new SignatureException("Token not valid"));
+        when(facade.updateVote(ID, 1L, BAD_TOKEN)).thenThrow(new SignatureException("Token not valid"));
         MvcResult result2 = mvc.perform(
-                put("/tenant/vote/"+ID)
+                put("/tenant/vote/" + ID)
                         .header("Token", BAD_TOKEN))
                 .andReturn();
-        assert(result2.getResponse().getStatus() == 403);
+        assert (result2.getResponse().getStatus() == 403);
     }
 
     @Test
-    void unvoteSuccess() throws Exception{
-        when(facade.updateVote(ID,-1L,GOOD_TOKEN)).thenReturn(true);
+    void unvoteSuccess() throws Exception {
+        when(facade.updateVote(ID, -1L, GOOD_TOKEN)).thenReturn(true);
         MvcResult result = mvc.perform(
-                put("/tenant/unvote/"+ID)
+                put("/tenant/unvote/" + ID)
                         .header("Token", GOOD_TOKEN))
                 .andReturn();
-        assert(result.getResponse().getStatus() == 200);
+        assert (result.getResponse().getStatus() == 200);
     }
 
 
     @Test
-    void unvoteFail() throws Exception{
-        when(facade.updateVote(ID,-1L,GOOD_TOKEN)).thenReturn(false);
+    void unvoteFail() throws Exception {
+        when(facade.updateVote(ID, -1L, GOOD_TOKEN)).thenReturn(false);
         MvcResult result1 = mvc.perform(
-                put("/tenant/unvote/"+ID)
+                put("/tenant/unvote/" + ID)
                         .header("Token", GOOD_TOKEN))
                 .andReturn();
-        assert(result1.getResponse().getStatus() == 404);
+        assert (result1.getResponse().getStatus() == 404);
 
-        when(facade.updateVote(ID,-1L,BAD_TOKEN)).thenThrow(new SignatureException("Token not valid"));
+        when(facade.updateVote(ID, -1L, BAD_TOKEN)).thenThrow(new SignatureException("Token not valid"));
         MvcResult result2 = mvc.perform(
-                put("/tenant/unvote/"+ID)
+                put("/tenant/unvote/" + ID)
                         .header("Token", BAD_TOKEN))
                 .andReturn();
-        assert(result2.getResponse().getStatus() == 403);
+        assert (result2.getResponse().getStatus() == 403);
+    }
+
+    @Test
+    void statistics() throws Exception {
+        when(facade.getStatistics(1591781603000L, 1591868003000L, null, GOOD_TOKEN))
+                .thenReturn(new Statistics(30.33, 30.33, 30.33, new Feedback(), new Feedback(), new Feedback()));
+        MvcResult result1 = mvc.perform(
+                get("/tenant/statistics")
+                        .header("Token", GOOD_TOKEN)
+                        .param("dateFrom", "1591781603000")
+                        .param("dateTo", "1591868003000")
+        )
+                .andReturn();
+        assert (result1.getResponse().getStatus() == 200);
     }
 }

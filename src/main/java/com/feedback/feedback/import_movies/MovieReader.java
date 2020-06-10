@@ -1,4 +1,4 @@
-package com.feedback.feedback.movies;
+package com.feedback.feedback.import_movies;
 
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +41,7 @@ public class MovieReader {
                 .collect(Collectors.toList());
         //TODO: last one 600->700
         List<Feedback> sendToBeSaved = comments.subList(1040,1155);
-        String tenant="movies";
+        String tenant="import_movies";
         sendToBeSaved.forEach(m->service.save(m,tenant));
         return comments;
     }

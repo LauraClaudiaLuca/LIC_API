@@ -1,4 +1,4 @@
-package com.feedback.feedback.movies;
+package com.feedback.feedback.import_movies;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
