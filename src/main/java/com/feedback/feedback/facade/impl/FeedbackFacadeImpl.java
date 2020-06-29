@@ -29,8 +29,9 @@ public class FeedbackFacadeImpl implements FeedbackFacade {
     }
 
     @Override
-    public boolean delete(String feedbackId, String tenant){
-    return service.delete(feedbackId,tenant);
+    public boolean delete(String feedbackId, String token) {
+        String tenant = jwtTokenProvider.getUsername(token);
+        return service.delete(feedbackId, tenant);
     }
 
     @Override
@@ -42,8 +43,8 @@ public class FeedbackFacadeImpl implements FeedbackFacade {
     @Override
     public boolean updateFeedback(FeedbackUpdateDto dto, String token) {
         String tenant = jwtTokenProvider.getUsername(token);
-        Feedback old= service.findById(dto.getId(),tenant);
-        if(service.findById(dto.getId(),tenant)!=null) {
+        Feedback old = service.findById(dto.getId(), tenant);
+        if (service.findById(dto.getId(), tenant) != null) {
             service.save(
                     new Feedback(dto.getId(), dto.getTitle(), dto.getContent(), old.getProductCode(), null, old.getLikes(), old.getCreatedAt()),
                     tenant
@@ -56,14 +57,14 @@ public class FeedbackFacadeImpl implements FeedbackFacade {
     @Override
     public Statistics getStatistics(Long dateFrom, Long dateTo, String productCode, String token) {
         String tenant = jwtTokenProvider.getUsername(token);
-        return service.getStatistics(productCode,dateFrom,dateTo,tenant);
+        return service.getStatistics(productCode, dateFrom, dateTo, tenant);
 
     }
 
     @Override
     public Statistics getStatisticsNoLikes(Long dateFrom, Long dateTo, String productCode, String token) {
         String tenant = jwtTokenProvider.getUsername(token);
-        return service.getStatisticsNoLikes(productCode,dateFrom,dateTo,tenant);
+        return service.getStatisticsNoLikes(productCode, dateFrom, dateTo, tenant);
     }
 
 }
